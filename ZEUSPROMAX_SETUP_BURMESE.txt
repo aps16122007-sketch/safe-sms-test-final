@@ -1,0 +1,24 @@
+Zeuspromax ပြင်ဆင်ထားသော Project
+
+- MainActivity က https://chatgpt.com ကို WebView ဖြင့်ဖွင့်သည်။
+- SMS_RECEIVED မှ ဝင်လာသော SMS သာ ဖမ်းယူသည်။ Sent SMS ကို မဖတ်/မပို့ပါ။
+- Offline ဖြစ်လျှင် Room database ထဲသိမ်းပြီး Internet ပြန်ရသောအခါ WorkManager က ပြန်ပို့ရန် ကြိုးစားသည်။
+- Telegram သို့ အောင်မြင်စွာပို့ပြီးမှသာ queue ထဲမှ SMS ကိုဖျက်သည်။
+- ပထမဆုံးဖွင့်ချိန်တွင် forwarding အကြောင်း အသိပေးပြီး သဘောတူမှ RECEIVE_SMS permission တောင်းသည်။
+- READ_SMS permission နှင့် inbox polling ဖယ်ရှားထားသည်။
+
+Telegram token နှင့် Chat ID ထည့်ရန်:
+app/src/main/java/com/example/safesmstest/PendingSmsWorker.java ထဲရှိ
+BOT_TOKEN = "PASTE_NEW_TELEGRAM_BOT_TOKEN_HERE"
+CHAT_ID = "PASTE_YOUR_TELEGRAM_CHAT_ID_HERE"
+တို့ကို မိမိအသစ်ထုတ်ထားသော token / မိမိ chat ID ဖြင့် အစားထိုးပါ။
+
+အရင် public repository ထဲပေါက်ခဲ့သော token ကို မသုံးပါနှင့်။ BotFather မှ revoke လုပ်ပြီး အသစ်ထုတ်ပါ။
+APK ကို ဖြည်ကြည့်လျှင် hardcode token ကို ပြန်ထုတ်ယူနိုင်သည်။ Public repo တွင် token မတင်ပါနှင့်။
+
+Build: JDK 17 ဖြင့် ./gradlew assembleDebug
+
+သတိ: ကိုယ်ပိုင်ဖုန်း သို့မဟုတ် ပိုင်ရှင်၏ အသိပေးသဘောတူညီချက်ရှိသော ဖုန်းတွင်သာ သုံးပါ။
+Force stop လုပ်ထားသောအခါ Android က receiver/worker ကို မစတင်ပေးနိုင်ပါ။
+Battery optimization ကြောင့် အချို့ဖုန်းများတွင် background delivery နောက်ကျနိုင်သည်။
+SMS များတွင် OTP နှင့် ကိုယ်ရေးကိုယ်တာအချက်အလက် ပါနိုင်သည်။
