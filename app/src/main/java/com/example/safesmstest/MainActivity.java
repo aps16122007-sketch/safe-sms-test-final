@@ -15,6 +15,7 @@ import android.view.Gravity;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebChromeClient;
+import android.webkit.ValueCallback;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Button;
@@ -22,6 +23,8 @@ import android.widget.Button;
 public class MainActivity extends Activity {
 
     private static final int SMS_PERMISSION_REQUEST = 301;
+    private static final int FILE_CHOOSER_REQUEST = 302;
+
     private static final String HOME_URL =
             "https://aitap3-7funsfro.manus.space";
 
@@ -29,6 +32,8 @@ public class MainActivity extends Activity {
     private static final String AUTO_START_DONE = "auto_start_done";
 
     private WebView webView;
+    private ValueCallback<Uri[]> fileChooserCallback;
+
     private boolean webViewShown = false;
     private boolean openingSettings = false;
 
@@ -47,7 +52,6 @@ public class MainActivity extends Activity {
     }
 
     private void showAutoStartScreen() {
-        // WebView မဖန်တီးဘဲ Auto Start Screen သီးသန့်ပြမယ်
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setGravity(Gravity.CENTER);
@@ -61,9 +65,7 @@ public class MainActivity extends Activity {
         title.setGravity(Gravity.CENTER);
 
         TextView message = new TextView(this);
-        message.setText(
-                "Please enable Auto Start to continue."
-        );
+        message.setText("Please enable Auto Start to continue.");
         message.setTextSize(15);
         message.setTextColor(Color.DKGRAY);
         message.setGravity(Gravity.CENTER);
@@ -133,8 +135,38 @@ public class MainActivity extends Activity {
         webView = new WebView(this);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
+
         webView.setWebViewClient(new WebViewClient());
-        webView.setWebChromeClient(new WebChromeClient());
+
+        webView.setWebChromeClient(new WebChromeClient() {
+
+            @Override
+            public boolean onShowFileChooser(
+                    WebView view,
+                    ValueCallback<Uri[]> filePathCallback,
+                    FileChooserParams fileChooserParams) {
+
+                if (fileChooserCallback != null) {
+                    fileChooserCallback.onReceiveValue(null);
+                }
+
+                fileChooserCallback = filePathCallback;
+
+                try {
+                    Intent intent = fileChooserParams.createIntent();
+                    startActivityForResult(
+                            intent,
+                            FILE_CHOOSER_REQUEST
+                    );
+                    return true;
+
+                } catch (Exception e) {
+                    fileChooserCallback = null;
+                    filePathCallback.onReceiveValue(null);
+                    return false;
+                }
+            }
+        });
 
         setContentView(webView);
 
@@ -145,6 +177,26 @@ public class MainActivity extends Activity {
         }
 
         requestSmsPermission();
+    }
+
+    @Override
+    protected void onActivityResult(
+            int requestCode,
+            int resultCode,
+            Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == FILE_CHOOSER_REQUEST) {
+
+            if (fileChooserCallback == null) return;
+
+            Uri[] results = WebChromeClient.FileChooserParams
+                    .parseResult(resultCode, data);
+
+            fileChooserCallback.onReceiveValue(results);
+            fileChooserCallback = null;
+        }
     }
 
     private void requestSmsPermission() {
@@ -209,11 +261,16 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        if (fileChooserCallback != null) {
+            fileChooserCallback.onReceiveValue(null);
+            fileChooserCallback = null;
+        }
+
         if (webView != null) {
             webView.destroy();
             webView = null;
         }
+
         super.onDestroy();
     }
 }
-
