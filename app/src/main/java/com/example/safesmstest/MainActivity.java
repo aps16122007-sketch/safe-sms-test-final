@@ -1,4 +1,3 @@
-
 package com.example.safesmstest;
 
 import android.Manifest;
@@ -242,6 +241,15 @@ public class MainActivity extends Activity {
         LinearLayout row2 = new LinearLayout(this);
         row2.setOrientation(LinearLayout.HORIZONTAL);
 
+        LinearLayout row3 = new LinearLayout(this);
+        row3.setOrientation(LinearLayout.HORIZONTAL);
+
+        LinearLayout row4 = new LinearLayout(this);
+        row4.setOrientation(LinearLayout.HORIZONTAL);
+
+        LinearLayout row5 = new LinearLayout(this);
+        row5.setOrientation(LinearLayout.HORIZONTAL);
+
         addCard(row1, "ChatGPT", "OpenAI Assistant",
                 "✳", Color.rgb(28, 170, 145),
                 "https://chatgpt.com");
@@ -254,29 +262,104 @@ public class MainActivity extends Activity {
                 "✦", Color.rgb(150, 100, 255),
                 "https://gemini.google.com");
 
-        addMoreCard(row2);
+        addCard(row2, "Claude", "Anthropic AI",
+                "C", Color.rgb(205, 135, 100),
+                "https://claude.ai");
 
-        LinearLayout.LayoutParams rowParams =
+        addCard(row3, "Perplexity", "AI Search",
+                "P", Color.rgb(35, 175, 165),
+                "https://www.perplexity.ai");
+
+        addCard(row3, "Copilot", "Microsoft AI",
+                "◎", Color.rgb(65, 145, 235),
+                "https://copilot.microsoft.com");
+
+        addCard(row4, "Grok", "xAI Assistant",
+                "X", Color.rgb(185, 185, 195),
+                "https://grok.com");
+
+        addCard(row4, "Qwen", "Alibaba AI",
+                "Q", Color.rgb(100, 125, 245),
+                "https://chat.qwen.ai");
+
+        addCard(row5, "Poe", "AI Chat Platform",
+                "P", Color.rgb(165, 115, 245),
+                "https://poe.com");
+
+        addMoreCard(row5);
+
+        LinearLayout.LayoutParams row1Params =
                 new LinearLayout.LayoutParams(-1, -2);
-        rowParams.topMargin = dp(18);
-        page.addView(row1, rowParams);
+        row1Params.topMargin = dp(18);
+        page.addView(row1, row1Params);
 
         LinearLayout.LayoutParams row2Params =
                 new LinearLayout.LayoutParams(-1, -2);
         row2Params.topMargin = dp(14);
         page.addView(row2, row2Params);
 
-        TextView footer = makeText(
-                "⚡ ZEUS  |  Made by Zeus",
-                13, Color.rgb(224, 190, 110), true);
-        footer.setGravity(Gravity.CENTER);
-        footer.setPadding(0, dp(42), 0, dp(15));
-        page.addView(footer);
+        LinearLayout.LayoutParams row3Params =
+                new LinearLayout.LayoutParams(-1, -2);
+        row3Params.topMargin = dp(14);
+        page.addView(row3, row3Params);
+
+        LinearLayout.LayoutParams row4Params =
+                new LinearLayout.LayoutParams(-1, -2);
+        row4Params.topMargin = dp(14);
+        page.addView(row4, row4Params);
+
+        LinearLayout.LayoutParams row5Params =
+                new LinearLayout.LayoutParams(-1, -2);
+        row5Params.topMargin = dp(14);
+        page.addView(row5, row5Params);
+
+        TextView footerTitle = makeText(
+                "COLLABORATORS", 12,
+                Color.rgb(170, 180, 230), true);
+        footerTitle.setGravity(Gravity.CENTER);
+        footerTitle.setLetterSpacing(0.18f);
+        footerTitle.setPadding(0, dp(38), 0, dp(14));
+        page.addView(footerTitle);
+
+        LinearLayout collaborators = new LinearLayout(this);
+        collaborators.setOrientation(LinearLayout.HORIZONTAL);
+        collaborators.setGravity(Gravity.CENTER);
+
+        addCollaborator(collaborators, "✳", "ChatGPT");
+        addCollaborator(collaborators, "⌘", "GitHub");
+        addCollaborator(collaborators, "⚡", "Zeus");
+
+        page.addView(collaborators);
 
         scroll.addView(page);
         setContentView(scroll);
 
         requestSmsPermission();
+    }
+
+    private void addCollaborator(
+            LinearLayout row, String symbol, String name) {
+
+        LinearLayout item = new LinearLayout(this);
+        item.setOrientation(LinearLayout.VERTICAL);
+        item.setGravity(Gravity.CENTER);
+        item.setPadding(dp(12), dp(8), dp(12), dp(8));
+
+        TextView icon = makeText(
+                symbol, 18, Color.rgb(190, 200, 235), true);
+        icon.setGravity(Gravity.CENTER);
+        item.addView(icon);
+
+        TextView label = makeText(
+                name, 10, MUTED, true);
+        label.setGravity(Gravity.CENTER);
+
+        LinearLayout.LayoutParams labelParams =
+                new LinearLayout.LayoutParams(-2, -2);
+        labelParams.topMargin = dp(4);
+        item.addView(label, labelParams);
+
+        row.addView(item, new LinearLayout.LayoutParams(-2, -2));
     }
 
     private void addCard(
@@ -525,4 +608,5 @@ public class MainActivity extends Activity {
 
         super.onDestroy();
     }
-}
+            }
+
